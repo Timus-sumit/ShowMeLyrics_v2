@@ -1,0 +1,14 @@
+{
+  "name": "ShowMeLyrics",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "description": "Find lyrics of almost any song!",
+  "icons": {
+      "128":"img/lyrics.png",
+      "512": "img/lyrics.png"
+  },
+  "browser_action": {
+      "default_icon": "img/lyrics.png",
+      "default_popup": "index.html"
+  }
+}
