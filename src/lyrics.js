@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+/*global chrome*/
+import React, { useState, useEffect } from "react"
 const axios = require('axios')
 
 const bgGradients = [
@@ -28,6 +29,17 @@ function Lyrics() {
     const [showName, setShowName] = useState("")
     const [artist, setArtist] = useState("")
     const [load, setLoad] = useState(false)
+   const [url, setUrl] = useState("")
+
+    useEffect(() => {
+      const queryInfo = {active: true, lastFocusedWindow: true}
+
+      chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
+          const url = tabs[0].url
+          setUrl(url)
+          console.log(url)
+      })
+  }, [])
 
     const onSongNameChange = (e) => {
         const val = e.target.value;
@@ -115,20 +127,21 @@ function Lyrics() {
   return (
     <div className= {`flex flex-col w-ext text-center items-center justify-center py-8 px-2 border-2 rounded-md ${clr}`}>
         <h1 className="text-3xl font-bold">ShowMeLyrics</h1>
+        {url !== "" && <p>{url}</p>}
         <div className="my-10">
             <form onSubmit={onSubmit} className="text-center">
-                <p className="text-lg mb-2">Enter the artist and song name!</p>
-                <input type="text" id="songName" name="songName" className="w-80 h-10 rounded-md border px-2" value={songName} onChange={onSongNameChange}/>
+                <p className="mb-2 text-lg">Enter the artist and song name!</p>
+                <input type="text" id="songName" name="songName" className="h-10 px-2 border rounded-md w-80" value={songName} onChange={onSongNameChange}/>
                 <br/>
-                <button className="rounded-md border py-1 px-2 bg-white mt-2 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">Search</button>
+                <button className="px-2 py-1 mt-2 bg-white border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">Search</button>
                 <br/>
             </form>
         </div>
         {(load === true) && <p>loading...</p>}
         {error !== "" && <p className="text-red-500">{error}</p>}
-        {coverArt !== "" && <img src={coverArt} alt="" className="w-60 rounded-sm"/>}
-        {showName !== "" && <p className="text-xl font-semibold mt-2">{showName}</p>}
-        {artist !== "" && <p className="text-lg mb-2">{artist}</p>}
+        {coverArt !== "" && <img src={coverArt} alt="" className="rounded-sm w-60"/>}
+        {showName !== "" && <p className="mt-2 text-xl font-semibold">{showName}</p>}
+        {artist !== "" && <p className="mb-2 text-lg">{artist}</p>}
         <br/>
         {lyrics.length !== 0 && lyrics.map((line) => (<p className="mt-1 text-base">{line}</p>))}
     </div>

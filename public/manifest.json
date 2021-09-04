@@ -7,8 +7,11 @@
       "128":"img/lyrics.png",
       "512": "img/lyrics.png"
   },
+  "permissions": [
+    "activeTab"
+  ],
   "browser_action": {
       "default_icon": "img/lyrics.png",
-      "default_popup": "index.html"
+      "default_popup": "popup.html"
   }
 }
