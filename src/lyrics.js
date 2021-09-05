@@ -1,6 +1,7 @@
 /*global chrome*/
 import React, { useState, useEffect } from "react"
 const axios = require('axios')
+const youtube = require('youtube-metadata-from-url');
 
 const bgGradients = [
   "bg-gradient-to-br from-purple-400 to-yellow-400",
@@ -39,7 +40,16 @@ function Lyrics() {
           setUrl(url)
           console.log(url)
       })
-  }, [])
+
+      if (url !== "" && url.search('www.youtube.com') !== -1) {
+        youtube.metadata(url).then((res) => {
+          let name = res.title
+          setSongName(name)
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+  }, [url])
 
     const onSongNameChange = (e) => {
         const val = e.target.value;
@@ -106,7 +116,7 @@ function Lyrics() {
                     }
                     setLoad(false)
                   } else {
-                    const err = "Could not find this song in the database! Maybe try removing characters like '-' from song name."
+                    const err = "Could not find this song in the database! Maybe try removing redundant part from song name like (offical video), features etc."
                     setError(err)
                     setLoad(false)
                   }
@@ -114,7 +124,7 @@ function Lyrics() {
                   console.error(error);
                 });
               } else {
-                const err = "Could not find this song in the database! Maybe try removing characters like '-','()' from song name."
+                const err = "Could not find this song in the database!Maybe try removing redundant part from song name like (offical video), features etc."
                 setError(err)
                 setLoad(false)
               }
@@ -127,7 +137,6 @@ function Lyrics() {
   return (
     <div className= {`flex flex-col w-ext text-center items-center justify-center py-8 px-2 border-2 rounded-md ${clr}`}>
         <h1 className="text-3xl font-bold">ShowMeLyrics</h1>
-        {url !== "" && <p>{url}</p>}
         <div className="my-10">
             <form onSubmit={onSubmit} className="text-center">
                 <p className="mb-2 text-lg">Enter the artist and song name!</p>
@@ -138,7 +147,7 @@ function Lyrics() {
             </form>
         </div>
         {(load === true) && <p>loading...</p>}
-        {error !== "" && <p className="text-red-500">{error}</p>}
+        {error !== "" && <p className="text-lg text-red-500">{error}</p>}
         {coverArt !== "" && <img src={coverArt} alt="" className="rounded-sm w-60"/>}
         {showName !== "" && <p className="mt-2 text-xl font-semibold">{showName}</p>}
         {artist !== "" && <p className="mb-2 text-lg">{artist}</p>}
